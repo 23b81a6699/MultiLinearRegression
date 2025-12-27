@@ -1,0 +1,65 @@
+.stApp {
+    background: linear-gradient(
+        135deg, 
+        #1e1b4b 0%,    /* Deep Twilight Blue */
+        #4c0519 50%,   /* Dark Velvet Crimson */
+        #1a0a0a 100%   /* Deep Cocoa Black */
+    );    
+
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+    /* Subtle glassmorphism with a hint of rose tint */
+    background-color: rgba(255, 255, 255, 0.08); 
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(251, 113, 133, 0.25); /* Soft rose border */
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+h1, h2, h3 {
+    /* Soft cream color for headings */
+    color: #fcfaf0; 
+    text-shadow:
+        0 0 6px rgba(255, 247, 214, 0.85),
+        0 2px 14px rgba(253, 192, 50, 0.4),
+        0 6px 28px rgba(0, 0, 0, 0.9);
+}
+
+/* Metrics box */
+div[data-testid="metric-container"] {
+    background-color: rgba(159, 18, 57, 0.25); /* Deep translucent rose */
+    border: 1px solid #fb7185; /* Bright Ruby edge */
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 0 22px rgba(251, 113, 133, 0.4);
+}
+
+/* Metric text color for high-end readability */
+div[data-testid="metric-container"] label, 
+div[data-testid="metric-container"] [data-testid="stMetricValue"] {
+    color: #ffffff !important;
+}
+
+/* Prediction highlight */
+.prediction-box {
+    background: linear-gradient(
+        135deg,
+        #fef3c7,  /* Soft light gold */
+        #fbbf24   /* Bright amber */
+    );
+    padding: 22px;
+    border-radius: 18px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #d02959; /* Dark crimson for contrast */
+    margin-top: 15px;
+    box-shadow: 0 0 35px rgba(251, 191, 36, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+}
