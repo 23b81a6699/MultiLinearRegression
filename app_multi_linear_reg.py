@@ -12,7 +12,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 # Page Configuration
 # =========================
 st.set_page_config(
-    page_title="Multiple Linear Regression",
+    page_title="Car Price Prediction",
     layout="centered"
 )
 
@@ -30,8 +30,8 @@ load_css("styles.css")
 # =========================
 st.markdown("""
 <div class="card">
-    <h1>Multiple Linear Regression</h1>
-    <p>Predict <b>Sales</b> from <b>TV, Radio & Newspaper</b> advertising spend</p>
+    <h1>Car Price Prediction</h1>
+    <p>Predict <b>Car Price</b> using <b>Engine Size, Horsepower & Mileage</b></p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -40,7 +40,7 @@ st.markdown("""
 # =========================
 @st.cache_data
 def load_data():
-    return pd.read_csv("advertising.csv")
+    return pd.read_csv("CarPrice_Assignment.csv")
 
 df = load_data()
 
@@ -55,8 +55,11 @@ st.markdown('</div>', unsafe_allow_html=True)
 # =========================
 # Prepare Data
 # =========================
-X = df[["TV", "Radio", "Newspaper"]]
-y = df["Sales"]
+features = ["enginesize", "horsepower", "citympg"]
+target = "price"
+
+X = df[features]
+y = df[target]
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
@@ -86,27 +89,27 @@ adj_r2 = 1 - (1 - r2) * (len(y_test) - 1) / (len(y_test) - X.shape[1] - 1)
 # Visualization
 # =========================
 st.markdown('<div class="card">', unsafe_allow_html=True)
-st.subheader("TV Advertising vs Sales")
+st.subheader("Engine Size vs Car Price")
 
 fig, ax = plt.subplots()
-ax.scatter(df["TV"], df["Sales"], alpha=0.6)
+ax.scatter(df["enginesize"], df["price"], alpha=0.6)
 
-tv_vals = np.linspace(df["TV"].min(), df["TV"].max(), 100)
-avg_radio = df["Radio"].mean()
-avg_news = df["Newspaper"].mean()
+engine_vals = np.linspace(df["enginesize"].min(), df["enginesize"].max(), 100)
+avg_hp = df["horsepower"].mean()
+avg_mpg = df["citympg"].mean()
 
 X_line = pd.DataFrame({
-    "TV": tv_vals,
-    "Radio": avg_radio,
-    "Newspaper": avg_news
+    "enginesize": engine_vals,
+    "horsepower": avg_hp,
+    "citympg": avg_mpg
 })
 
 X_line_scaled = scaler.transform(X_line)
 y_line = model.predict(X_line_scaled)
 
-ax.plot(tv_vals, y_line, color="red")
-ax.set_xlabel("TV Advertising")
-ax.set_ylabel("Sales")
+ax.plot(engine_vals, y_line, color="red")
+ax.set_xlabel("Engine Size")
+ax.set_ylabel("Car Price")
 
 st.pyplot(fig)
 st.markdown('</div>', unsafe_allow_html=True)
@@ -118,8 +121,8 @@ st.markdown('<div class="card">', unsafe_allow_html=True)
 st.subheader("Model Performance")
 
 c1, c2 = st.columns(2)
-c1.metric("MAE", f"{mae:.2f}")
-c2.metric("RMSE", f"{rmse:.2f}")
+c1.metric("MAE", f"{mae:,.2f}")
+c2.metric("RMSE", f"{rmse:,.2f}")
 
 c3, c4 = st.columns(2)
 c3.metric("R²", f"{r2:.3f}")
@@ -134,10 +137,10 @@ st.markdown(f"""
 <div class="card">
     <h3>Model Coefficients</h3>
     <p>
-        <b>TV:</b> {model.coef_[0]:.3f}<br>
-        <b>Radio:</b> {model.coef_[1]:.3f}<br>
-        <b>Newspaper:</b> {model.coef_[2]:.3f}<br><br>
-        <b>Intercept:</b> {model.intercept_:.3f}
+        <b>Engine Size:</b> {model.coef_[0]:.2f}<br>
+        <b>Horsepower:</b> {model.coef_[1]:.2f}<br>
+        <b>City MPG:</b> {model.coef_[2]:.2f}<br><br>
+        <b>Intercept:</b> {model.intercept_:,.2f}
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -146,34 +149,34 @@ st.markdown(f"""
 # Prediction Section
 # =========================
 st.markdown('<div class="card">', unsafe_allow_html=True)
-st.subheader("Predict Sales")
+st.subheader("Predict Car Price")
 
-tv = st.slider(
-    "TV Advertising Budget",
-    float(df.TV.min()),
-    float(df.TV.max()),
-    150.0
+engine = st.slider(
+    "Engine Size",
+    float(df.enginesize.min()),
+    float(df.enginesize.max()),
+    float(df.enginesize.mean())
 )
 
-radio = st.slider(
-    "Radio Advertising Budget",
-    float(df.Radio.min()),
-    float(df.Radio.max()),
-    20.0
+horsepower = st.slider(
+    "Horsepower",
+    float(df.horsepower.min()),
+    float(df.horsepower.max()),
+    float(df.horsepower.mean())
 )
 
-news = st.slider(
-    "Newspaper Advertising Budget",
-    float(df.Newspaper.min()),
-    float(df.Newspaper.max()),
-    30.0
+citympg = st.slider(
+    "City Mileage (MPG)",
+    float(df.citympg.min()),
+    float(df.citympg.max()),
+    float(df.citympg.mean())
 )
 
-input_scaled = scaler.transform([[tv, radio, news]])
-pred_sales = model.predict(input_scaled)[0]
+input_scaled = scaler.transform([[engine, horsepower, citympg]])
+pred_price = model.predict(input_scaled)[0]
 
 st.markdown(
-    f'<div class="prediction-box">Predicted Sales: {pred_sales:.2f}</div>',
+    f'<div class="prediction-box">Predicted Car Price: ₹ {pred_price:,.0f}</div>',
     unsafe_allow_html=True
 )
 
